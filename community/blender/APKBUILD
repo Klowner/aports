@@ -1,0 +1,66 @@
+# Maintainer: Mark Riedesel <mark@klowner.com>
+pkgname=blender
+pkgver=2.77a
+pkgrel=0
+pkgdesc="3D Creation/Animation/Publishing System"
+url="http://www.blender.org/"
+arch="all"
+license="GPL2"
+depends=""
+#depends_dev=""
+makedepends="cmake libx11-dev libjpeg-turbo-dev zlib-dev libpng-dev freetype-dev
+	python3-dev openimageio-dev glew-dev openal-soft-dev ffmpeg-dev openjpeg-dev
+	fftw-dev tiff-dev mesa-dev libxi-dev libsndfile-dev sdl2 libxmu-dev"
+install=""
+subpackages=""
+source="http://download.blender.org/source/${pkgname}-${pkgver}.tar.gz
+	allow-implicit-func-decl.patch
+	disable-malloc-stats.patch
+	musl-no-execinfo.patch"
+
+_builddir="$srcdir"/$pkgname-$pkgver
+
+prepare() {
+	local i
+	cd "$_builddir"
+	for i in $source; do
+		case $i in
+		*.patch) msg $i; patch -p1 -i "$srcdir"/$i || return 1;;
+		esac
+	done
+}
+
+build() {
+	cd "$_builddir"
+	mkdir -p "$_builddir"/build && cd build
+	cmake .. \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DWITH_INSTALL_PORTABLE:BOOL=OFF \
+		-DWITH_PYTHON_INSTALL:BOOL=OFF \
+		-DWITH_OPENCOLLADA:BOOL=OFF \
+		-DPYTHON_VERSION=3.5 \
+		-DPYTHON_LIBPATH=/usr/lib \
+		-DPYTHON_LIBRARY=python3.5m \
+		-DPYTHON_INCLUDE_DIRS=/usr/include/python3.5m \
+		-DNO_EXECINFO:BOOL=ON \
+		|| return 1
+	make || return 1
+}
+
+package() {
+	cd "$_builddir"
+}
+
+md5sums="bb192274fe5957ce62bce9f0557ea4b4  blender-2.77a.tar.gz
+7496c5f9b274a528022ee207ef9a9a69  allow-implicit-func-decl.patch
+c57ac2c00ff61fd08c1060ffb65cb1ef  disable-malloc-stats.patch
+a8b26b78bcbcf7cc0c56ec66579dc386  musl-no-execinfo.patch"
+sha256sums="3770fa00f50a6654eb8b5fe625ca8942ab5672ac4685b7af24597251ace85c67  blender-2.77a.tar.gz
+e3c3220d5651ead5e181a387d2246ee5503c8416b083e63283d96f785e65e4ee  allow-implicit-func-decl.patch
+e81526e587f6829b4209238f01931c45e0123a39a1ddcda5f71bd38eee8e9787  disable-malloc-stats.patch
+1ea9f7536dd4bbe75e0d2c2ac8dde5e2c645b47784467054b865b334e0a05d7f  musl-no-execinfo.patch"
+sha512sums="4f8223a3786b80fa613ace27bea9349309b5857bcc1fafdb7d769f6192d5cb455ce4faf60920d7a1c2cb82ef8c40a10b25a760748b305c16c550657cf1e4df93  blender-2.77a.tar.gz
+5a3e965047cb115b7dd2713602883e128635312f07e29f60f872003438bd8eddc5249bce1cbf6f90d42a1ccbf880dce84a66be07b85eccc2574a9e35c8c3bb04  allow-implicit-func-decl.patch
+3784c322e3c6a6212bbe9c5daf2cbcd41a6bbeed2ad9a2129fba1919e862fd96e8d063d560aafaa3a1ecda000b10bc1aa1a3874fb199a20fb1848286f466ea3b  disable-malloc-stats.patch
+4f25df6d33908ee82e8a5351b27e0bad4786ec76d84ad8b5bb38143e3d9a9764abd267127d3170ed98f6e2fd9664cf53837013aeffebaa61cb027400f37ea95f  musl-no-execinfo.patch"
