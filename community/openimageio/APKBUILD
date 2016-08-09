@@ -9,7 +9,7 @@ arch="all"
 license="BSD"
 depends="openexr"
 makedepends="cmake giflib-dev zlib-dev boost-dev libjpeg-turbo-dev libpng-dev tiff-dev
-	glew-dev python3-dev openexr-dev ffmpeg2.8-dev libraw-dev libwebp-dev freetype-dev
+	glew-dev python-dev openexr-dev ffmpeg2.8-dev libraw-dev libwebp-dev freetype-dev
 	qt-dev mesa-dev openssl-dev jasper-dev"
 install=""
 subpackages="$pkgname-dev $pkgname-doc $pkgname-utils"
@@ -33,11 +33,11 @@ build() {
 	cd "$_builddir"
 	mkdir build && cd build
 	cmake .. \
-		-DUSE_OPENSSL=on \
-		-DUSE_PYTHON3=on \
+		-DUSE_OPENSSL=ON \
+		-DUSE_PYTHON3=OFF \
 		-DCMAKE_INSTALL_PREFIX=/usr \
-		-DOIIO_BUILD_TESTS=on \
-		-DOIIO_BUILD_TOOLS=on
+		-DOIIO_BUILD_TESTS=ON \
+		-DOIIO_BUILD_TOOLS=ON
 	make
 }
 
