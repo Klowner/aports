@@ -1,5 +1,5 @@
 # Contributor: Mark Riedesel <mark@klowner.com>
-# Maintainer: Mark Riedesel <mark@klowner.com>
+# Maintainer:
 pkgname=openimageio
 pkgver=1.6.14
 pkgrel=0
@@ -17,20 +17,10 @@ source="$pkgname-$pkgver.tar.gz::https://github.com/OpenImageIO/oiio/archive/Rel
 	nocpp-error.patch
 "
 
-_builddir="$srcdir"/oiio-Release-$pkgver
-
-prepare() {
-	local i
-	cd "$_builddir"
-	for i in $source; do
-		case $i in
-		*.patch) msg $i; patch -p1 -i "$srcdir"/$i || return 1;;
-		esac
-	done
-}
+builddir="$srcdir"/oiio-Release-$pkgver
 
 build() {
-	cd "$_builddir"
+	cd "$builddir"
 	mkdir build && cd build
 	cmake .. \
 		-DUSE_OPENSSL=ON \
@@ -44,7 +34,7 @@ build() {
 }
 
 package() {
-	cd "$_builddir"/build
+	cd "$builddir"/build
 	make DESTDIR="$pkgdir" install || return 1
 	rm -rf "$pkgdir"/usr/share/fonts/oiio
 }
