@@ -1,5 +1,5 @@
 # Contributor: Mark Riedesel <mark@klowner.com>
-# Maintainer: Mark Riedesel <mark@klowner.com>
+# Maintainer:
 pkgname=opencolorio
 pkgver=1.0.9
 pkgrel=0
@@ -8,7 +8,7 @@ url="http://opencolorio.org"
 arch="all"
 license="BSD"
 depends="python2"
-makedepends="$depends cmake python2-dev"
+makedepends="cmake python2-dev"
 install=""
 subpackages="$pkgname-python $pkgname-dev"
 source="$pkgname-$pkgver.tar.gz::http://github.com/imageworks/OpenColorIO/archive/v$pkgver.tar.gz"

@@ -1,6 +1,6 @@
-# Contributor:
-# Maintainer: Mark Riedesel <mark@klowner.com>
-pkgname=openexr
+# Contributor: Mark Riedesel <mark@klowner.com>
+# Maintainer:
+pkgname=openexr-klowner
 pkgver=2.2.0
 pkgrel=0
 pkgdesc="High dynamic-range (HDR) image file format library"
