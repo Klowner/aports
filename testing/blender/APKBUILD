@@ -1,4 +1,5 @@
-# Maintainer: Mark Riedesel <mark@klowner.com>
+# Contributor: Mark Riedesel <mark@klowner.com>
+# Maintainer:
 pkgname=blender
 pkgver=2.77a
 pkgrel=0
@@ -6,8 +7,7 @@ pkgdesc="3D Creation/Animation/Publishing System"
 url="http://www.blender.org/"
 arch="all"
 license="GPL2"
-depends="blender-shared=$pkgrel-r$pkgver"
-#depends_dev=""
+depends="blender-shared=$pkgver-r$pkgrel"
 makedepends="cmake libx11-dev jpeg-dev zlib-dev libpng-dev freetype-dev
 	python3-dev openimageio-dev opencolorio-dev glew-dev openal-soft-dev ffmpeg-dev openjpeg-dev
 	fftw-dev tiff-dev mesa-dev libxi-dev libsndfile-dev sdl2 libxmu-dev boost-dev openexr-dev"
@@ -16,21 +16,11 @@ subpackages="$pkgname-doc $pkgname-shared"
 source="http://download.blender.org/source/${pkgname}-${pkgver}.tar.gz
 	blender-2.77a-musl.patch"
 
-_builddir="$srcdir"/$pkgname-$pkgver
-
-prepare() {
-	local i
-	cd "$_builddir"
-	for i in $source; do
-		case $i in
-		*.patch) msg $i; patch -p1 -i "$srcdir"/$i || return 1;;
-		esac
-	done
-}
+builddir="$srcdir"/$pkgname-$pkgver
 
 build() {
-	cd "$_builddir"
-	mkdir -p "$_builddir"/build && cd build
+	cd "$builddir"
+	mkdir -p "$builddir"/build && cd build
 	cmake .. \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_BUILD_TYPE=Release \
@@ -59,7 +49,7 @@ shared() {
 }
 
 package() {
-	cd "$_builddir"/build
+	cd "$builddir"/build
 	make DESTDIR="$pkgdir" install || return 1
 }
 
