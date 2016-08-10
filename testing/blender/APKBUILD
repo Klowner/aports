@@ -8,9 +8,10 @@ url="http://www.blender.org/"
 arch="all"
 license="GPL2"
 depends="blender-shared=$pkgver-r$pkgrel"
-makedepends="cmake libx11-dev jpeg-dev zlib-dev libpng-dev freetype-dev
-	python3-dev openimageio-dev opencolorio-dev glew-dev openal-soft-dev ffmpeg-dev openjpeg-dev
-	fftw-dev tiff-dev mesa-dev libxi-dev libsndfile-dev sdl2 libxmu-dev boost-dev openexr-dev"
+makedepends="cmake libx11-dev jpeg-dev zlib-dev libpng-dev freetype-dev python3-dev
+	openimageio-dev opencolorio-dev glew-dev openal-soft-dev ffmpeg-dev openjpeg-dev
+	fftw-dev tiff-dev mesa-dev libxi-dev libsndfile-dev sdl2 libxmu-dev boost-dev
+	openexr-dev"
 install=""
 subpackages="$pkgname-doc $pkgname-shared"
 source="http://download.blender.org/source/${pkgname}-${pkgver}.tar.gz
