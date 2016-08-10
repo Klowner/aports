@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# add symlink from blender to blender-headless if regular blender is not installed as well
+
+if [ ! -e /usr/bin/blender ] && [ ! -h /usr/bin/blender ]; then
+	ln -s /usr/bin/blender-headless /usr/bin/blender
+fi
+

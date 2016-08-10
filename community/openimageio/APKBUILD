@@ -1,4 +1,4 @@
-# Contributor:
+# Contributor: Mark Riedesel <mark@klowner.com>
 # Maintainer: Mark Riedesel <mark@klowner.com>
 pkgname=openimageio
 pkgver=1.6.14
@@ -8,12 +8,12 @@ url="https://sites.google.com/site/openimageio/"
 arch="all"
 license="BSD"
 depends="openexr"
-makedepends="cmake giflib-dev zlib-dev boost-dev libjpeg-turbo-dev libpng-dev tiff-dev
-	glew-dev python-dev openexr-dev ffmpeg2.8-dev libraw-dev libwebp-dev freetype-dev
-	qt-dev mesa-dev openssl-dev jasper-dev"
+makedepends="cmake giflib-dev zlib-dev boost-dev jpeg-dev libpng-dev tiff-dev
+	glew-dev python2-dev openexr-dev ffmpeg2.8-dev libraw-dev libwebp-dev freetype-dev
+	qt-dev mesa-dev openssl-dev jasper-dev opencolorio-dev"
 install=""
-subpackages="$pkgname-dev $pkgname-doc $pkgname-utils"
-source="https://github.com/OpenImageIO/oiio/archive/Release-${pkgver}.tar.gz
+subpackages="$pkgname-python $pkgname-dev $pkgname-doc $pkgname-utils"
+source="$pkgname-$pkgver.tar.gz::https://github.com/OpenImageIO/oiio/archive/Release-${pkgver}.tar.gz
 	nocpp-error.patch
 "
 
@@ -34,9 +34,11 @@ build() {
 	mkdir build && cd build
 	cmake .. \
 		-DUSE_OPENSSL=ON \
+		-DUSE_PYTHON=ON \
 		-DUSE_PYTHON3=OFF \
 		-DCMAKE_INSTALL_PREFIX=/usr \
-		-DOIIO_BUILD_TESTS=ON \
+		-DPYLIB_INSTALL_DIR=lib/python2.7/site-packages \
+		-DOIIO_BUILD_TESTS=OFF \
 		-DOIIO_BUILD_TOOLS=ON
 	make
 }
@@ -44,6 +46,7 @@ build() {
 package() {
 	cd "$_builddir"/build
 	make DESTDIR="$pkgdir" install || return 1
+	rm -rf "$pkgdir"/usr/share/fonts/oiio
 }
 
 doc() {
@@ -60,9 +63,15 @@ utils() {
 	mv "$pkgdir"/usr/bin "$subpkgdir"/usr/
 }
 
-md5sums="cd8af592f3c4223b3ac0d67d116beda9  Release-1.6.14.tar.gz
+python() {
+	pkgdesc="Python bindings for OpenImageIO image i/o library"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/python2.7 "$subpkgdir"/usr/lib
+}
+
+md5sums="cd8af592f3c4223b3ac0d67d116beda9  openimageio-1.6.14.tar.gz
 b057578af07ff767f4b3f34caa3f1fed  nocpp-error.patch"
-sha256sums="40a477a88426838d8ac8a2303b92861e39665ca4b00d4f4e40a31143c7ba2097  Release-1.6.14.tar.gz
+sha256sums="40a477a88426838d8ac8a2303b92861e39665ca4b00d4f4e40a31143c7ba2097  openimageio-1.6.14.tar.gz
 fccdd7cfea935dfea412924479d0892c4aed5cf2043acee06325b270b77508c4  nocpp-error.patch"
-sha512sums="2f4f219e7fa372fe6e41dfb4d4938ee990f99c1788856adfdd4e752393bd6f0d6928f72162d6147bcbe02df705fe96078ec790c7886f8513c82257e6264309e5  Release-1.6.14.tar.gz
+sha512sums="2f4f219e7fa372fe6e41dfb4d4938ee990f99c1788856adfdd4e752393bd6f0d6928f72162d6147bcbe02df705fe96078ec790c7886f8513c82257e6264309e5  openimageio-1.6.14.tar.gz
 72fa27ef702b566aeb90d72d81ff84e11f048e87d0b3d6af2e0abc7df082169764e85431d640f5391cd39f25c2a441602a489f7b7fd06d0c5d04694bdc2f3f99  nocpp-error.patch"

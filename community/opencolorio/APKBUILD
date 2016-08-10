@@ -1,0 +1,41 @@
+# Contributor: Mark Riedesel <mark@klowner.com>
+# Maintainer: Mark Riedesel <mark@klowner.com>
+pkgname=opencolorio
+pkgver=1.0.9
+pkgrel=0
+pkgdesc="A color management framework for visual effects and animation"
+url="http://opencolorio.org"
+arch="all"
+license="BSD"
+depends="python2"
+makedepends="$depends cmake python2-dev"
+install=""
+subpackages="$pkgname-python $pkgname-dev"
+source="$pkgname-$pkgver.tar.gz::http://github.com/imageworks/OpenColorIO/archive/v$pkgver.tar.gz"
+_builddir="$srcdir"/OpenColorIO-$pkgver
+
+build() {
+	cd "$_builddir"
+	mkdir build && cd build
+	cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+	make
+}
+
+package() {
+	cd "$_builddir"/build
+	make DESTDIR="$pkgdir" install
+}
+
+dev() {
+	default_dev
+}
+
+python() {
+	pkgdesc="Python bindings for OpenColorIO color management framework"
+	mkdir -p "$subpkgdir"/usr/lib
+	mv "$pkgdir"/usr/lib/python2.7 "$subpkgdir"/usr/lib
+}
+
+md5sums="06d0efe9cc1b32d7b14134779c9d1251  opencolorio-1.0.9.tar.gz"
+sha256sums="27c81e691c15753cd2b560c2ca4bd5679a60c2350eedd43c99d44ca25d65ea7f  opencolorio-1.0.9.tar.gz"
+sha512sums="ac953ba9904aff44de37cc2ee60dbf524bd86d25f699c1eacaa61ca30fed8f077194d47d34a72c05b706da7e1a3974a988d67d60031d424d91b9240f8ab86ed3  opencolorio-1.0.9.tar.gz"

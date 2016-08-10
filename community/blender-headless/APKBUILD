@@ -1,22 +1,21 @@
 # Maintainer: Mark Riedesel <mark@klowner.com>
-pkgname=blender
+pkgname=blender-headless
 pkgver=2.77a
 pkgrel=0
-pkgdesc="3D Creation/Animation/Publishing System"
+pkgdesc="3D Creation/Animation/Publishing System (headless build)"
 url="http://www.blender.org/"
 arch="all"
 license="GPL2"
-depends="blender-shared=$pkgrel-r$pkgver"
-#depends_dev=""
-makedepends="cmake libx11-dev jpeg-dev zlib-dev libpng-dev freetype-dev
-	python3-dev openimageio-dev opencolorio-dev glew-dev openal-soft-dev ffmpeg-dev openjpeg-dev
-	fftw-dev tiff-dev mesa-dev libxi-dev libsndfile-dev sdl2 libxmu-dev boost-dev openexr-dev"
-install=""
-subpackages="$pkgname-doc $pkgname-shared"
-source="http://download.blender.org/source/${pkgname}-${pkgver}.tar.gz
+depends="blender-shared=$pkgver-r$pkgrel"
+makedepends="cmake jpeg-dev zlib-dev libpng-dev freetype-dev
+	python3-dev openimageio-dev opencolorio-dev openal-soft-dev
+	openjpeg-dev tiff-dev boost-dev openexr-dev glew-dev"
+install="$pkgname.post-install $pkgname.pre-deinstall"
+subpackages=""
+source="http://download.blender.org/source/blender-${pkgver}.tar.gz
 	blender-2.77a-musl.patch"
 
-_builddir="$srcdir"/$pkgname-$pkgver
+_builddir="$srcdir"/blender-$pkgver
 
 prepare() {
 	local i
@@ -32,12 +31,13 @@ build() {
 	cd "$_builddir"
 	mkdir -p "$_builddir"/build && cd build
 	cmake .. \
+		-C../build_files/cmake/config/blender_headless.cmake \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DWITH_INSTALL_PORTABLE:BOOL=OFF \
 		-DWITH_PYTHON_INSTALL:BOOL=OFF \
-		-DWITH_OPENCOLLADA:BOOL=OFF \
 		-DWITH_OPENCOLORIO:BOOL=ON \
+		-DWITH_OPENCOLLADA:BOOL=OFF \
 		-DPYTHON_VERSION=3.5 \
 		-DPYTHON_LIBPATH=/usr/lib \
 		-DPYTHON_LIBRARY=python3.5m \
@@ -47,20 +47,23 @@ build() {
 	make || return 1
 }
 
-doc() {
-	default_doc
-}
-
-shared() {
-	pkgdesc="Blender shared runtime data and add-on scripts"
-	arch="noarch"
-	mkdir -p "$subpkgdir"/usr/share/
-	mv "$pkgdir"/usr/share/blender "$subpkgdir"/usr/share/
-}
-
 package() {
 	cd "$_builddir"/build
 	make DESTDIR="$pkgdir" install || return 1
+
+	# exclude icons and desktop shortuts
+	rm -rf "$pkgdir"/usr/share/icons
+	rm -rf "$pkgdir"/usr/share/applications
+
+	# exclude data provided by blender-shared package
+	rm -rf "$pkgdir"/usr/share/blender
+
+	# docs are contained in the blender-docs package
+	rm -rf "$pkgdir"/usr/share/doc
+
+	# rename blender to blender-headless
+	rm "$pkgdir"/usr/bin/blender-thumbnailer.py
+	mv "$pkgdir"/usr/bin/blender "$pkgdir"/usr/bin/blender-headless
 }
 
 md5sums="bb192274fe5957ce62bce9f0557ea4b4  blender-2.77a.tar.gz

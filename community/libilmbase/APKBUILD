@@ -1,5 +1,5 @@
-# Contributor:
-# Maintainer:
+# Contributor: Mark Riedesel <mark@klowner.com>
+# Maintainer: Mark Riedesel <mark@klowner.com>
 pkgname=libilmbase
 pkgver=2.2.0
 pkgrel=0
