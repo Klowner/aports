@@ -12,17 +12,17 @@ makedepends="cmake python2-dev"
 install=""
 subpackages="$pkgname-python $pkgname-dev"
 source="$pkgname-$pkgver.tar.gz::http://github.com/imageworks/OpenColorIO/archive/v$pkgver.tar.gz"
-_builddir="$srcdir"/OpenColorIO-$pkgver
+builddir="$srcdir"/OpenColorIO-$pkgver
 
 build() {
-	cd "$_builddir"
+	cd "$builddir"
 	mkdir build && cd build
 	cmake -DCMAKE_INSTALL_PREFIX=/usr ..
 	make
 }
 
 package() {
-	cd "$_builddir"/build
+	cd "$builddir"/build
 	make DESTDIR="$pkgdir" install
 }
 
