@@ -1,0 +1,64 @@
+# Maintainer: Mark Riedesel <mark@klowner.com>
+pkgname=blender-headless
+pkgver=2.77a
+pkgrel=0
+pkgdesc="3D Creation/Animation/Publishing System (headless build)"
+url="http://www.blender.org/"
+arch="all"
+license="GPL2"
+depends="blender-shared=$pkgver-r$pkgrel"
+makedepends="cmake jpeg-dev zlib-dev libpng-dev freetype-dev
+	python3-dev openimageio-dev opencolorio-dev openal-soft-dev
+	openjpeg-dev tiff-dev boost-dev openexr-dev glew-dev"
+install="$pkgname.post-install $pkgname.pre-deinstall"
+subpackages=""
+source="http://download.blender.org/source/blender-${pkgver}.tar.gz
+	blender-2.77a-musl.patch"
+
+builddir="$srcdir"/blender-$pkgver
+
+build() {
+	cd "$builddir"
+	mkdir -p "$builddir"/build && cd build
+	cmake .. \
+		-C../build_files/cmake/config/blender_headless.cmake \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_BUILD_TYPE=Release \
+		-DWITH_INSTALL_PORTABLE:BOOL=OFF \
+		-DWITH_PYTHON_INSTALL:BOOL=OFF \
+		-DWITH_OPENCOLORIO:BOOL=ON \
+		-DWITH_OPENCOLLADA:BOOL=OFF \
+		-DPYTHON_VERSION=3.5 \
+		-DPYTHON_LIBPATH=/usr/lib \
+		-DPYTHON_LIBRARY=python3.5m \
+		-DPYTHON_INCLUDE_DIRS=/usr/include/python3.5m \
+		-DNO_EXECINFO:BOOL=ON \
+		|| return 1
+	make || return 1
+}
+
+package() {
+	cd "$builddir"/build
+	make DESTDIR="$pkgdir" install || return 1
+
+	# exclude icons and desktop shortuts
+	rm -rf "$pkgdir"/usr/share/icons
+	rm -rf "$pkgdir"/usr/share/applications
+
+	# exclude data provided by blender-shared package
+	rm -rf "$pkgdir"/usr/share/blender
+
+	# docs are contained in the blender-docs package
+	rm -rf "$pkgdir"/usr/share/doc
+
+	# rename blender to blender-headless
+	rm "$pkgdir"/usr/bin/blender-thumbnailer.py
+	mv "$pkgdir"/usr/bin/blender "$pkgdir"/usr/bin/blender-headless
+}
+
+md5sums="bb192274fe5957ce62bce9f0557ea4b4  blender-2.77a.tar.gz
+93bda85f6a3c0c587ee7790b7d35e4cc  blender-2.77a-musl.patch"
+sha256sums="3770fa00f50a6654eb8b5fe625ca8942ab5672ac4685b7af24597251ace85c67  blender-2.77a.tar.gz
+f536a69354bd1a4b482a6150542d528a92a0107ff639832500f7dc28c64360ec  blender-2.77a-musl.patch"
+sha512sums="4f8223a3786b80fa613ace27bea9349309b5857bcc1fafdb7d769f6192d5cb455ce4faf60920d7a1c2cb82ef8c40a10b25a760748b305c16c550657cf1e4df93  blender-2.77a.tar.gz
+6ecf4a6a9b56f045c9d14093ae13c6cb714ce8dff2212a08830edcf540ec47f143c2670e197a97ca42f380a60825abab4e7b3d7dbc88c44265fae7f83f2cd602  blender-2.77a-musl.patch"

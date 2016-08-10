@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# remove the blender->blender-headless symlink if it exists
+
+if [ -h /usr/bin/blender ]; then
+	rm /usr/bin/blender
+fi
