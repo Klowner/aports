@@ -1,0 +1,31 @@
+# Contributor: Mark Riedesel <mark@klowner.com>
+# Maintainer: Mark Riedesel <mark@klowner.com>
+pkgname=rfbproxy
+pkgver=1.1.1
+pkgrel=03
+pkgsuffix=pierre-$pkgrel
+pkgdesc="A program for recording, playback, and video conversion of VNC sessions"
+url="http://rfbproxy.sourceforge.net/"
+arch="all"
+license="GPL2"
+depends=""
+makedepends="make"
+install=""
+subpackages="$pkgname-doc"
+source="${pkgname}-${pkgver}.tar.gz::https://github.com/pmdumuid/rfbproxy/archive/${pkgname}-${pkgver}-${pkgsuffix}.tar.gz"
+builddir="$srcdir/"${pkgname}-${pkgname}-${pkgver}-${pkgsuffix}
+
+build() {
+	cd "$builddir"/
+	./configure --prefix=/usr || return 1
+	make || return 1
+}
+
+package() {
+	cd "$builddir"
+	make DESTDIR="$pkgdir" install
+}
+
+md5sums="702488c85ebd9c83df3715be76b389b9  rfbproxy-1.1.1.tar.gz"
+sha256sums="62ac0880fdd339aa9dad53b765aca020aea6b7ef45610f12e92cff9b5589e07b  rfbproxy-1.1.1.tar.gz"
+sha512sums="c900df27ba660b3afc4e3869082625bf96cff30380a90086506e083fa7bf71ea043dd9033aab5d448d829691763af2a081d51b74c568b06c6c44b188b48fcd05  rfbproxy-1.1.1.tar.gz"
